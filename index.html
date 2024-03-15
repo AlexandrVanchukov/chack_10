@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Application</title>
+</head>
+<body>
+    <h4>vanchukov</h4>
+    <script>
+        // Function to calculate Pearson correlation coefficient
+        function calculatePearsonCorrelation(A, B) {
+            if (A.length !== B.length) {
+                return null;
+            }
+
+            const n = A.length;
+            let sumA = 0;
+            let sumB = 0;
+            let sumAB = 0;
+            let sumASquared = 0;
+            let sumBSquared = 0;
+
+            for (let i = 0; i < n; i++) {
+                sumA += A[i];
+                sumB += B[i];
+                sumAB += A[i] * B[i];
+                sumASquared += A[i] * A[i];
+                sumBSquared += B[i] * B[i];
+            }
+
+            const numerator = n * sumAB - sumA * sumB;
+            const denominator = Math.sqrt((n * sumASquared - sumA * sumA) * (n * sumBSquared - sumB * sumB));
+
+            if (denominator === 0) {
+                return 1; // Module, unsigned
+            } else {
+                const r = numerator / denominator;
+                return Math.abs(r).toFixed(3); // Three digits after the dot without rounding
+            }
+        }
+
+        // Function to process URL parameters and calculate Pearson correlation coefficient
+        function processURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const AString = urlParams.get('A');
+            const BString = urlParams.get('B');
+
+            if (AString && BString) {
+                const A = AString.split(',').map(Number);
+                const B = BString.split(',').map(Number);
+
+                const correlationCoefficient = calculatePearsonCorrelation(A, B);
+                if (correlationCoefficient !== null) {
+                    document.title = correlationCoefficient;
+                }
+            }
+        }
+
+        // Call the function when the page loads
+        window.onload = processURLParams;
+    </script>
+</body>
+</html>
